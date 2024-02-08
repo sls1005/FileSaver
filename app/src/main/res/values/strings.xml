@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">File Saver</string>
+    <string name="title1">Main function</string>
+    <string name="title2">Path</string>
+    <string name="title3">Hint</string>
+    <string name="main_function_enabled">The app will now try to save files that it opens. They will be stored under the specified path.</string>
+    <string name="main_function_disabled">The app will NOT try to save files.</string>
+    <string name="plz">Please select a folder for saving files.</string>
+    <string name="stop_saving_files">Stop</string>
+    <string name="start_saving_files">Start saving files</string>
+    <string name="setting_up">Tap to set up</string>
+    <string name="hint1">(The path might not be displayed in a recognizable form. Tap on it if you wish to change it.)</string>
+    <string name="hint2">It might take time (or a reboot, or two) for this to be (fully) effective. (That is, to be able to work with all your apps, or most of the apps.)</string>
+    <string name="error0">Error: Something wrong</string>
+    <string name="error1">Error: No path specified</string>
+    <string name="success1">File saved</string>
+</resources>
