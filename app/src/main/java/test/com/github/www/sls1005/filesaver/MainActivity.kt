@@ -200,7 +200,17 @@ class MainActivity : ComponentActivity() {
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
-                                    stringResource(id = R.string.hint2),
+                                    stringResource(id = R.string.hint2_1),
+                                    fontSize = 24.sp,
+                                    lineHeight = 36.sp,
+                                    modifier = Modifier.padding(5.dp)
+                                )
+                            }
+                            Box(
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    stringResource(id = R.string.hint2_2),
                                     fontSize = 24.sp,
                                     lineHeight = 36.sp,
                                     modifier = Modifier.padding(5.dp)
