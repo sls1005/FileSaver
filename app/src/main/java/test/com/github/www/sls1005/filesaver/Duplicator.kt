@@ -15,8 +15,7 @@ class Duplicator: Activity() {
             "URI.txt"
         )
         if (! stored.exists()) {
-            Toast.makeText(this, getString(R.string.error1), Toast.LENGTH_SHORT).show()
-            setResult(RESULT_CANCELED)
+            displayErrorMsgAndFinish(getString(R.string.error1))
             return
         }
         val uri = Uri.parse(stored.readText())
@@ -66,9 +65,12 @@ class Duplicator: Activity() {
         setResult(RESULT_OK)
         finish()
     }
-    private fun displayGeneralErrorMsgAndFinish() {
-        Toast.makeText(this, getString(R.string.error0), Toast.LENGTH_SHORT).show()
+    private fun displayErrorMsgAndFinish(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         setResult(RESULT_CANCELED)
         finish()
+    }
+    private fun displayGeneralErrorMsgAndFinish() {
+        displayErrorMsgAndFinish(getString(R.string.error0))
     }
 }
