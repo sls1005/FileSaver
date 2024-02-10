@@ -1,6 +1,7 @@
 package test.com.github.www.sls1005.filesaver
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,10 +30,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import test.com.github.www.sls1005.filesaver.ui.theme.FileSaverTheme
 import java.io.File
 
@@ -117,6 +121,7 @@ class MainActivity : ComponentActivity() {
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
+                                val msg = stringResource(id = R.string.plz)
                                 OutlinedButton(
                                     onClick = {
                                         if (duplicatorEnabled()) {
@@ -124,7 +129,7 @@ class MainActivity : ComponentActivity() {
                                         } else {
                                             if (getStoredPath() == null) {
                                                 launcher.launch(null)
-                                                Toast.makeText(this@MainActivity, getString(R.string.plz), Toast.LENGTH_SHORT).show()
+                                                showMsg(this@MainActivity, msg)
                                                 shouldEnableDuplicatorInCallback = true
                                             } else {
                                                 setDuplicatorEnabled(true)
@@ -217,6 +222,59 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+                        OutlinedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                        ) {
+                            Text(
+                                stringResource(id = R.string.title4),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 26.sp,
+                                modifier = Modifier.padding(10.dp)
+                            )
+                            Text(
+                                stringResource(id = R.string.text1_1),
+                                fontSize = 24.sp,
+                                lineHeight = 36.sp,
+                                modifier = Modifier.padding(5.dp)
+                            )
+                            val url = stringResource(id = R.string.url1)
+                            Text(
+                                url,
+                                fontSize = 24.sp,
+                                lineHeight = 36.sp,
+                                color = Color(0xFF3792FA),
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .clickable {
+                                        startActivity(
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        )
+                                    }
+                            )
+                            Text(
+                                stringResource(id = R.string.text1_2),
+                                fontSize = 24.sp,
+                                lineHeight = 36.sp,
+                                modifier = Modifier.padding(5.dp)
+                            )
+                            val title = stringResource(id = R.string.title5)
+                            TextButton(
+                                onClick = {
+                                    startActivity(
+                                        Intent(this@MainActivity, OssLicensesMenuActivity::class.java).apply {
+                                            putExtra("title", title)
+                                        }
+                                    )
+                                }, modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
+                            ) {
+                                Text(stringResource(id = R.string.display_licenses), fontSize = 24.sp
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -246,4 +304,8 @@ class MainActivity : ComponentActivity() {
             PackageManager.DONT_KILL_APP
         )
     }
+}
+
+internal fun showMsg(ctx: Context, msg: String) {
+    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
 }

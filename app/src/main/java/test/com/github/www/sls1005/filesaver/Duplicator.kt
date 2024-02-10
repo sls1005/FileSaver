@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.documentfile.provider.DocumentFile
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import java.io.File
 
 class Duplicator: Activity() {
@@ -61,12 +60,12 @@ class Duplicator: Activity() {
         src.copyTo(dst)
         src.close()
         dst.close()
-        Toast.makeText(this, getString(R.string.success1), Toast.LENGTH_SHORT).show()
+        showMsg(this, getString(R.string.success1))
         setResult(RESULT_OK)
         finish()
     }
     private fun displayErrorMsgAndFinish(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        showMsg(this, msg)
         setResult(RESULT_CANCELED)
         finish()
     }
