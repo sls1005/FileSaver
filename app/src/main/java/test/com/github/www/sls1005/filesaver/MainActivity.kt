@@ -13,12 +13,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
@@ -35,12 +37,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.documentfile.provider.DocumentFile
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import test.com.github.www.sls1005.filesaver.ui.theme.FileSaverTheme
 import java.io.File
 
 class MainActivity : ComponentActivity() {
-    private var shouldEnableDuplicatorInCallback = false
     private val launcher = registerForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
     ) { uri ->
@@ -51,10 +53,16 @@ class MainActivity : ComponentActivity() {
             )
             if (file.exists()) {
                 val previouslyStored = Uri.parse(file.readText())
-                contentResolver.releasePersistableUriPermission(
-                    previouslyStored,
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                )
+                DocumentFile.fromTreeUri(this, previouslyStored).let {
+                    if (it != null) {
+                        if (it.canWrite()) {
+                            contentResolver.releasePersistableUriPermission(
+                                previouslyStored,
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                            )
+                        }
+                    }
+                }
                 file.delete()
             }
             contentResolver.takePersistableUriPermission(
@@ -62,12 +70,6 @@ class MainActivity : ComponentActivity() {
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             )
             file.writeText(uri.toString())
-            if (shouldEnableDuplicatorInCallback) {
-                if (!duplicatorEnabled()) {
-                    setDuplicatorEnabled(true)
-                }
-                shouldEnableDuplicatorInCallback = false
-            }
         }
     }
     override fun onResume() {
@@ -83,15 +85,31 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.verticalScroll(rememberScrollState())
                     ) {
-                        val pathSet = (getStoredPath() != null)
-                        var enabled by remember { mutableStateOf(false) }
-                        enabled = duplicatorEnabled().let {
-                            if (it && !pathSet) {
-                                setDuplicatorEnabled(false)
-                                false
+                        val pathSet = (getStoredUri() != null)
+                        var duplicator1Enabled by remember { mutableStateOf(false) }
+                        var duplicator2Enabled by remember { mutableStateOf(false) }
+                        var checkbox1Checked by remember { mutableStateOf(false) }
+                        var checkbox2Checked by remember { mutableStateOf(false) }
+                        val expired = getStoredUri().let {
+                            if (it != null) {
+                                DocumentFile.fromTreeUri(this@MainActivity, it).let {
+                                    if (it != null) {
+                                        (! it.canWrite())
+                                    } else {
+                                        false
+                                    }
+                                }
                             } else {
-                                it
+                                false
                             }
+                        }
+                        getDuplicatorEnabled(1).let {
+                            duplicator1Enabled = it
+                            checkbox1Checked = it
+                        }
+                        getDuplicatorEnabled(2).let {
+                            duplicator2Enabled = it
+                            checkbox2Checked = it
                         }
                         OutlinedCard(
                             modifier = Modifier
@@ -104,48 +122,81 @@ class MainActivity : ComponentActivity() {
                                 fontSize = 26.sp,
                                 modifier = Modifier.padding(10.dp)
                             )
-                            Box (
-                                contentAlignment = Alignment.Center,
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
+                                Checkbox(
+                                    checked = checkbox1Checked,
+                                    onCheckedChange = { checkbox1Checked = it },
+                                    modifier = Modifier.padding(10.dp)
+                                )
                                 Text(
-                                    if (enabled) {
-                                        stringResource(id = R.string.main_function_enabled)
-                                    } else {
-                                        stringResource(id = R.string.main_function_disabled)
-                                    }, fontSize = 24.sp,
-                                    lineHeight = 36.sp,
-                                    modifier = Modifier.padding(5.dp)
+                                    stringResource(id = R.string.text1),
+                                    fontSize = 24.sp,
+                                    lineHeight = 26.sp,
+                                    modifier = Modifier.padding(10.dp)
+                                )
+                            }
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Checkbox(
+                                    checked = checkbox2Checked,
+                                    onCheckedChange = { checkbox2Checked = it },
+                                    modifier = Modifier.padding(10.dp)
+                                )
+                                Text(
+                                    stringResource(id = R.string.text2),
+                                    fontSize = 24.sp,
+                                    lineHeight = 26.sp,
+                                    modifier = Modifier.padding(10.dp)
                                 )
                             }
                             Box (
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                val msg = stringResource(id = R.string.plz)
-                                OutlinedButton(
-                                    onClick = {
-                                        if (duplicatorEnabled()) {
-                                            setDuplicatorEnabled(false)
-                                        } else {
-                                            if (getStoredPath() == null) {
+                                if (!(
+                                    (checkbox1Checked == duplicator1Enabled)
+                                            &&
+                                    (checkbox2Checked == duplicator2Enabled)
+                                )) {
+                                    val msg = stringResource(id = R.string.plz)
+                                    OutlinedButton(
+                                        onClick = {
+                                            if (
+                                                (checkbox1Checked || checkbox2Checked)
+                                                        &&
+                                                (getStoredUri() == null)
+                                            ) {
                                                 launcher.launch(null)
                                                 showMsg(this@MainActivity, msg)
-                                                shouldEnableDuplicatorInCallback = true
-                                            } else {
-                                                setDuplicatorEnabled(true)
                                             }
-                                        }
-                                        enabled = duplicatorEnabled()
-                                    },
-                                    modifier = Modifier.padding(10.dp)
-                                ) {
-                                    Text(
-                                        if (enabled) {
-                                            stringResource(id = R.string.stop_saving_files)
-                                        } else {
-                                            stringResource(id = R.string.start_saving_files)
-                                        }, fontSize = 24.sp
-                                    )
+                                            listOf(
+                                                checkbox1Checked,
+                                                checkbox2Checked
+                                            ).forEachIndexed { idx, checked ->
+                                                if (checked != getDuplicatorEnabled(idx + 1)) {
+                                                    setDuplicatorEnabled(idx + 1, checked)
+                                                }
+                                            }
+                                            getDuplicatorEnabled(1).let {
+                                                duplicator1Enabled = it
+                                                checkbox1Checked = it
+                                            }
+                                            getDuplicatorEnabled(2).let {
+                                                duplicator2Enabled = it
+                                                checkbox2Checked = it
+                                            }
+                                        },
+                                        modifier = Modifier.padding(15.dp)
+                                    ) {
+                                        Text(stringResource(id = R.string.button1), fontSize = 26.sp)
+                                    }
                                 }
                             }
                         }
@@ -169,7 +220,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 Text(
                                     if (pathSet) {
-                                        getStoredPath() ?: ""
+                                        getStoredUri()?.path ?: ""
                                     } else {
                                         stringResource(id = R.string.setting_up)
                                     }, fontSize = 24.sp
@@ -181,7 +232,11 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 Text(
                                     if (pathSet) {
-                                        stringResource(id = R.string.hint1)
+                                        if (expired) {
+                                            stringResource(id = R.string.hint1_2)
+                                        } else {
+                                            stringResource(id = R.string.hint1_1)
+                                        }
                                     } else {
                                         ""
                                     }, fontSize = 24.sp,
@@ -234,7 +289,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(10.dp)
                             )
                             Text(
-                                stringResource(id = R.string.text1_1),
+                                stringResource(id = R.string.text3_1),
                                 fontSize = 24.sp,
                                 lineHeight = 36.sp,
                                 modifier = Modifier.padding(5.dp)
@@ -254,7 +309,7 @@ class MainActivity : ComponentActivity() {
                                     }
                             )
                             Text(
-                                stringResource(id = R.string.text1_2),
+                                stringResource(id = R.string.text3_2),
                                 fontSize = 24.sp,
                                 lineHeight = 36.sp,
                                 modifier = Modifier.padding(5.dp)
@@ -280,7 +335,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private fun getStoredPath(): String? {
+    private fun getStoredUri(): Uri? {
         val stored = File(
             applicationContext.filesDir,
             "URI.txt"
@@ -288,21 +343,43 @@ class MainActivity : ComponentActivity() {
         if (! stored.exists()) {
             return null
         }
-        return Uri.parse(stored.readText()).path
+        return Uri.parse(stored.readText())
     }
-    private fun duplicatorEnabled(): Boolean {
-        return (packageManager.getComponentEnabledSetting(ComponentName(this, Duplicator::class.java)) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+    private fun getDuplicatorEnabled(id: Int): Boolean {
+        return if (id in 1..2) {
+            packageManager.getComponentEnabledSetting(
+                ComponentName(
+                    this,
+                    when(id) {
+                        1 -> DuplicatorI::class.java
+                        2 -> DuplicatorII::class.java
+                        else -> return false
+                    }
+                )
+            ) in listOf(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+        } else {
+            false
+        }
     }
-    private fun setDuplicatorEnabled(e: Boolean) {
-        packageManager.setComponentEnabledSetting(
-            ComponentName(this, Duplicator::class.java),
-            if (e) {
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-            } else {
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                   },
-            PackageManager.DONT_KILL_APP
-        )
+    private fun setDuplicatorEnabled(id: Int, e: Boolean) {
+        if (id in 1..2) {
+            packageManager.setComponentEnabledSetting(
+                ComponentName(
+                    this,
+                    when(id) {
+                        1 -> DuplicatorI::class.java
+                        2 -> DuplicatorII::class.java
+                        else -> return
+                    }
+                ),
+                if (e) {
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                } else {
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                },
+                PackageManager.DONT_KILL_APP
+            )
+        }
     }
 }
 
