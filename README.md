@@ -4,7 +4,7 @@ File Saver is an app that does one simple thing: it opens files provided by othe
 
 Recently, many apps allow opening files with another app, but not all of them offer the option to save files into shared storage. Some do provide such an option, but some of them require too much permission for doing that.
 
-Although it's really good to have apps managing files (and securing user data) for us, some people still like to manage files by themselves. In addition, app-specific files usually cannot be accessed with the system picker (unless the app has a `DocumentsProvider`), so you can hardly upload them to a website or cloud storage. The purpose of this app is to copy these files into shared storage, so they can be easily selected and can be managed.
+Although it's really good to have apps managing files (and securing user data) for us, some people still like to manage files by themselves. In addition, app-specific files usually cannot be accessed with the system picker (unless the app has a `DocumentsProvider`), so you can hardly upload them to a website or cloud storage. The purpose of this app is to copy these files into shared storage, so that they can be easily selected and managed.
 
 ## Screenshot
 
