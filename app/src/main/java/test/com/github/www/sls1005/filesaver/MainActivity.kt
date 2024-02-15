@@ -53,15 +53,11 @@ class MainActivity : ComponentActivity() {
             )
             if (file.exists()) {
                 val previouslyStored = Uri.parse(file.readText())
-                DocumentFile.fromTreeUri(this, previouslyStored).let {
-                    if (it != null) {
-                        if (it.canWrite()) {
-                            contentResolver.releasePersistableUriPermission(
-                                previouslyStored,
-                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                            )
-                        }
-                    }
+                if (hasPermission(this, previouslyStored)) {
+                    contentResolver.releasePersistableUriPermission(
+                        previouslyStored,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
                 }
                 file.delete()
             }
@@ -92,13 +88,7 @@ class MainActivity : ComponentActivity() {
                         var checkbox2Checked by remember { mutableStateOf(false) }
                         val expired = getStoredUri().let {
                             if (it != null) {
-                                DocumentFile.fromTreeUri(this@MainActivity, it).let {
-                                    if (it != null) {
-                                        (! it.canWrite())
-                                    } else {
-                                        false
-                                    }
-                                }
+                                (! hasPermission(this@MainActivity, it))
                             } else {
                                 false
                             }
@@ -385,4 +375,13 @@ class MainActivity : ComponentActivity() {
 
 internal fun showMsg(ctx: Context, msg: String) {
     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
+}
+
+internal fun hasPermission(ctx: Context, uri: Uri): Boolean {
+    ctx.contentResolver.persistedUriPermissions.forEach {
+        if (it.uri == uri) {
+            return true
+        }
+    }
+    return false
 }

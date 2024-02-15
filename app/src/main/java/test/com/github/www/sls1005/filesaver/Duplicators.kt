@@ -45,12 +45,13 @@ private fun saveFile(uri: Uri?, ctx: Activity) {
         }
         val cr = this.getContentResolver()
         val storedUri = Uri.parse(stored.readText())
+        if (! hasPermission(this, storedUri)) {
+            displayErrorMsgAndFinish(this, getString(R.string.error2))
+            return
+        }
         val dir = DocumentFile.fromTreeUri(this, storedUri)
         if (dir == null) {
             displayGeneralErrorMsgAndFinish(this)
-            return
-        } else if (!dir.canWrite()) {
-            displayErrorMsgAndFinish(this, getString(R.string.error2))
             return
         }
         val filename = DocumentFile.fromSingleUri(this, uri).let {
