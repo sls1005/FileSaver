@@ -6,7 +6,7 @@
     <string name="title4">License</string>
     <string name="title5">Licenses</string>
     <string name="text1">Save files opened by this app.</string>
-    <string name="text2">Store data sent by other apps into files.</string>
+    <string name="text2">Save files shared by other apps.</string>
     <string name="button1">Confirm</string>
     <string name="plz">Please select a folder for saving files.</string>
     <string name="setting_up">Tap to set up</string>
