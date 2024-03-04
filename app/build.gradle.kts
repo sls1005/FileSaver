@@ -12,8 +12,8 @@ android {
         applicationId = "test.com.github.www.sls1005.filesaver"
         minSdk = 21
         targetSdk = 34
-        versionCode = 7
-        versionName = "2.1.1"
+        versionCode = 8
+        versionName = "2.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
