@@ -10,10 +10,10 @@ android {
 
     defaultConfig {
         applicationId = "test.com.github.www.sls1005.filesaver"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 34
-        versionCode = 8
-        versionName = "2.1.2"
+        versionCode = 9
+        versionName = "2.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

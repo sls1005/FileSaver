@@ -49,5 +49,25 @@
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
+        <service android:name=".TileServiceI"
+            android:exported="true"
+            android:enabled="true"
+            android:label="Save files"
+            android:icon="@drawable/save_files"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+        <service android:name=".TileServiceII"
+            android:exported="true"
+            android:enabled="true"
+            android:label="Save files sent"
+            android:icon="@drawable/save_files_sent"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
     </application>
 </manifest>
