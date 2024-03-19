@@ -93,11 +93,11 @@ class MainActivity : ComponentActivity() {
                                 false
                             }
                         }
-                        getDuplicatorEnabled(1).let {
+                        getDuplicatorEnabled(1, this@MainActivity).let {
                             duplicator1Enabled = it
                             checkbox1Checked = it
                         }
-                        getDuplicatorEnabled(2).let {
+                        getDuplicatorEnabled(2, this@MainActivity).let {
                             duplicator2Enabled = it
                             checkbox2Checked = it
                         }
@@ -170,15 +170,15 @@ class MainActivity : ComponentActivity() {
                                                 checkbox1Checked,
                                                 checkbox2Checked
                                             ).forEachIndexed { idx, checked ->
-                                                if (checked != getDuplicatorEnabled(idx + 1)) {
-                                                    setDuplicatorEnabled(idx + 1, checked)
+                                                if (checked != getDuplicatorEnabled(idx + 1, this@MainActivity)) {
+                                                    setDuplicatorEnabled(idx + 1, checked, this@MainActivity)
                                                 }
                                             }
-                                            getDuplicatorEnabled(1).let {
+                                            getDuplicatorEnabled(1, this@MainActivity).let {
                                                 duplicator1Enabled = it
                                                 checkbox1Checked = it
                                             }
-                                            getDuplicatorEnabled(2).let {
+                                            getDuplicatorEnabled(2, this@MainActivity).let {
                                                 duplicator2Enabled = it
                                                 checkbox2Checked = it
                                             }
@@ -335,42 +335,6 @@ class MainActivity : ComponentActivity() {
         }
         return Uri.parse(stored.readText())
     }
-    private fun getDuplicatorEnabled(id: Int): Boolean {
-        return if (id in 1..2) {
-            packageManager.getComponentEnabledSetting(
-                ComponentName(
-                    this,
-                    when(id) {
-                        1 -> DuplicatorI::class.java
-                        2 -> DuplicatorII::class.java
-                        else -> return false
-                    }
-                )
-            ) in listOf(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
-        } else {
-            false
-        }
-    }
-    private fun setDuplicatorEnabled(id: Int, e: Boolean) {
-        if (id in 1..2) {
-            packageManager.setComponentEnabledSetting(
-                ComponentName(
-                    this,
-                    when(id) {
-                        1 -> DuplicatorI::class.java
-                        2 -> DuplicatorII::class.java
-                        else -> return
-                    }
-                ),
-                if (e) {
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                } else {
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                },
-                PackageManager.DONT_KILL_APP
-            )
-        }
-    }
 }
 
 internal fun showMsg(ctx: Context, msg: String) {
@@ -384,4 +348,42 @@ internal fun hasPermission(ctx: Context, uri: Uri): Boolean {
         }
     }
     return false
+}
+
+internal fun getDuplicatorEnabled(id: Int, ctx: Context): Boolean {
+    return if (id in 1..2) {
+        ctx.getPackageManager().getComponentEnabledSetting(
+            ComponentName(
+                ctx,
+                when(id) {
+                    1 -> DuplicatorI::class.java
+                    2 -> DuplicatorII::class.java
+                    else -> return false
+                }
+            )
+        ) in listOf(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+    } else {
+        false
+    }
+}
+
+internal fun setDuplicatorEnabled(id: Int, e: Boolean, ctx: Context) {
+    if (id in 1..2) {
+        ctx.getPackageManager().setComponentEnabledSetting(
+            ComponentName(
+                ctx,
+                when(id) {
+                    1 -> DuplicatorI::class.java
+                    2 -> DuplicatorII::class.java
+                    else -> return
+                }
+            ),
+            if (e) {
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+            } else {
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+            },
+            PackageManager.DONT_KILL_APP
+        )
+    }
 }

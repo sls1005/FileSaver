@@ -8,31 +8,14 @@ import android.os.Build
 import android.os.Bundle
 import java.io.File
 
-class DuplicatorI : Activity() {
+open class DuplicatorI : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        saveFile(intent.data, this)
+        saveFile()
     }
-}
-
-class DuplicatorII : Activity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        saveFile(
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
-            } else {
-                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
-            },
-            this
-        )
-    }
-}
-
-private fun saveFile(uri: Uri?, ctx: Activity) {
-    with(ctx) {
+    protected fun saveFile(uri: Uri?) {
         if (uri == null) {
-            displayGeneralErrorMsgAndFinish(this)
+            displayGeneralErrorMsgAndFinish()
             return
         }
         val stored = File(
@@ -40,27 +23,27 @@ private fun saveFile(uri: Uri?, ctx: Activity) {
             "URI.txt"
         )
         if (!stored.exists()) {
-            displayErrorMsgAndFinish(this, getString(R.string.error1))
+            displayErrorMsgAndFinish(getString(R.string.error1))
             return
         }
         val cr = this.getContentResolver()
         val storedUri = Uri.parse(stored.readText())
         if (! hasPermission(this, storedUri)) {
-            displayErrorMsgAndFinish(this, getString(R.string.error2))
+            displayErrorMsgAndFinish(getString(R.string.error2))
             return
         }
         val dir = DocumentFile.fromTreeUri(this, storedUri)
         if (dir == null) {
-            displayGeneralErrorMsgAndFinish(this)
+            displayGeneralErrorMsgAndFinish()
             return
         }
         val filename = DocumentFile.fromSingleUri(this, uri).let {
             if (it == null) {
-                displayGeneralErrorMsgAndFinish(this)
+                displayGeneralErrorMsgAndFinish()
                 return
             } else {
                 it.name ?: run {
-                    displayGeneralErrorMsgAndFinish(this)
+                    displayGeneralErrorMsgAndFinish()
                     return
                 }
             }
@@ -68,43 +51,52 @@ private fun saveFile(uri: Uri?, ctx: Activity) {
         val f = dir.createFile(
             cr.getType(uri).let {
                 it ?: run {
-                    displayGeneralErrorMsgAndFinish(this)
+                    displayGeneralErrorMsgAndFinish()
                     return
                 }
             }, filename
         ).let {
             it ?: run {
-                displayGeneralErrorMsgAndFinish(this)
+                displayGeneralErrorMsgAndFinish()
                 return
             }
         }
         val dst = cr.openOutputStream(f.uri) ?: run {
-            displayGeneralErrorMsgAndFinish(this)
+            displayGeneralErrorMsgAndFinish()
             return
         }
         val src = cr.openInputStream(uri) ?: run {
-            displayGeneralErrorMsgAndFinish(this)
+            displayGeneralErrorMsgAndFinish()
             return
         }
         src.copyTo(dst)
         src.close()
         dst.close()
         showMsg(this, getString(R.string.success1))
-        setResult(Activity.RESULT_OK)
+        setResult(RESULT_OK)
         finish()
     }
-}
-
-private fun displayErrorMsgAndFinish(ctx: Activity, msg: String) {
-    with(ctx) {
+    private fun displayErrorMsgAndFinish(msg: String) {
         showMsg(this, msg)
-        setResult(Activity.RESULT_CANCELED)
+        setResult(RESULT_CANCELED)
         finish()
+    }
+    private fun displayGeneralErrorMsgAndFinish() {
+        displayErrorMsgAndFinish(getString(R.string.error0))
+    }
+    protected open fun saveFile() {
+        saveFile(intent.data)
     }
 }
 
-private fun displayGeneralErrorMsgAndFinish(ctx: Activity) {
-    with(ctx) {
-        displayErrorMsgAndFinish(ctx, getString(R.string.error0))
+class DuplicatorII : DuplicatorI() {
+    override fun saveFile() {
+        saveFile(
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+            } else {
+                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+            }
+        )
     }
 }
