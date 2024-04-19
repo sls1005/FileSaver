@@ -1,8 +1,11 @@
 package test.com.github.www.sls1005.filesaver
 
+import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import androidx.annotation.RequiresApi
 
+@RequiresApi(Build.VERSION_CODES.N)
 open class TileServiceI: TileService() {
     override fun onTileAdded() {
         super.onTileAdded()
@@ -40,6 +43,7 @@ open class TileServiceI: TileService() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.N)
 class TileServiceII: TileServiceI() {
     override fun update() {
         update(2)
