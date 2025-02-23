@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FileSaver"
-        tools:targetApi="34">
+        tools:targetApi="35">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -45,26 +45,24 @@
                 <data android:mimeType="*/*"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
-        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
+        <activity android:name=".ShowOpenSourceLibrariesActivity"
+            android:exported="false"/>
         <service android:name=".TileServiceI"
             android:exported="true"
-            android:enabled="true"
-            android:label="Save files"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:label="@string/tile1_label"
             android:icon="@drawable/save_files"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
         <service android:name=".TileServiceII"
             android:exported="true"
-            android:enabled="true"
-            android:label="Save files sent"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:label="@string/tile2_label"
             android:icon="@drawable/save_files_sent"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>

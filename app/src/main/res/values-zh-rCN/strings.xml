@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">文件保存器</string>
+    <string name="title1">保存文件</string>
+    <string name="title2">路径</string>
+    <string name="title3">提示</string>
+    <string name="title4">许可证</string>
+    <string name="text1">保存本应用程序所开启的任何文件。</string>
+    <string name="text2">保存其他应用程序传送给本应用程序的文件。</string>
+    <string name="tile1_label">保存文件</string>
+    <string name="tile2_label">保存传送的文件</string>
+    <string name="button1">却认</string>
+    <string name="plz">请选择您想用来保存文件的文件夹。</string>
+    <string name="setting_up">轻触以设置</string>
+    <string name="hint1_1">（路径可能不会以习惯或能够辨识的方式显示。轻触以更改。）</string>
+    <string name="hint1_2">（错误：授权已逾期。请重新选择文件夹。）</string>
+    <!-- Note: never use 权限 unless you want to mean "power scope." -->
+    <string name="hint2_1">1. 在设置完成后，若此应用程序被选中来开启或传送文件，则反而会将其保存于先前选择的文件夹并结束运行。然而，只有在相应的复选框已被勾选的情况下，此应用才会被显示在用于选择应用程序的列表中。</string>
+    <string name="hint2_2">2. 首次安装后，可能必须经过一段时间，或一、两次重启后，才能使本应用程序完全发挥作用（亦即能够显示在所有或大部份选择应用程序的列表中）。</string>
+    <string name="error0">错误：发生了未知的错误</string>
+    <string name="error1">错误：未指定路径</string>
+    <string name="error2">错误：授权已逾期。请重新指定路径。</string>
+    <string name="success1">文件已保存</string>
+    <string name="text3_1">本应用程序的源代码可在下列地方取得</string>
+    <string name="text3_2">并以 MIT 许可证释出。</string>
+    <string name="display_licenses">列出函式库</string>
+</resources>

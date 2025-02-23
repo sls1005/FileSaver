@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">檔案儲存器</string>
+    <string name="title1">儲存檔案</string>
+    <string name="title2">路徑</string>
+    <string name="title3">提示</string>
+    <string name="title4">授權</string>
+    <string name="text1">儲存本應用程式所開啟的任何檔案。</string>
+    <string name="text2">儲存其他應用程式向本應用程式傳送的檔案。</string>
+    <string name="tile1_label">儲存檔案</string>
+    <string name="tile2_label">儲存傳送的檔案</string>
+    <string name="button1">確認</string>
+    <string name="plz">請選擇您想用來儲存文件的資料夾。</string>
+    <string name="setting_up">輕觸來設定</string>
+    <string name="hint1_1">（路徑可能不會以習慣或能夠辨識的方式顯示。輕觸以更改。）</string>
+    <string name="hint1_2">（錯誤：授權已逾期。請重新選擇資料夾。）</string>
+    <string name="hint2_1">1. 在設定完成後，若此應用程式被選中來開啟或傳送檔案，則反而會將其儲存於先前選擇的資料夾並結束執行。然而，只有在相應的勾選框已被勾選的情況下，此應用程式才會被顯示在用於選擇應用程式的列表中。</string>
+    <string name="hint2_2">2. 首次安裝後，可能必須經過一段時間，或一、兩次重啟後，才能使本應用程式完全發揮作用（亦即能夠顯示於所有或大部份選擇應用程式的列表中）。</string>
+    <string name="error0">錯誤：發生了未知的錯誤</string>
+    <string name="error1">錯誤：未指定路徑</string>
+    <string name="error2">錯誤：授權已逾期。請重新指定路徑。</string>
+    <string name="success1">檔案已儲存</string>
+    <string name="text3_1">本應用程式的原始碼可在下列地方取得</string>
+    <string name="text3_2">並以 MIT 授權釋出。</string>
+    <string name="display_licenses">列出函式庫</string>
+</resources>

@@ -37,8 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.documentfile.provider.DocumentFile
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import test.com.github.www.sls1005.filesaver.ui.theme.FileSaverTheme
 import java.io.File
 
@@ -191,9 +189,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         OutlinedCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
+                            modifier = Modifier.fillMaxWidth().padding(10.dp)
                         ) {
                             Text(
                                 stringResource(id = R.string.title2),
@@ -204,9 +200,8 @@ class MainActivity : ComponentActivity() {
                             TextButton(
                                 onClick = {
                                     launcher.launch(null)
-                                }, modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
+                                },
+                                modifier = Modifier.fillMaxWidth().padding(10.dp)
                             ) {
                                 Text(
                                     if (pathSet) {
@@ -236,9 +231,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         OutlinedCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
+                            modifier = Modifier.fillMaxWidth().padding(10.dp)
                         ) {
                             Text(
                                 stringResource(id = R.string.title3),
@@ -268,9 +261,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         OutlinedCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
+                            modifier = Modifier.fillMaxWidth().padding(10.dp)
                         ) {
                             Text(
                                 stringResource(id = R.string.title4),
@@ -304,20 +295,15 @@ class MainActivity : ComponentActivity() {
                                 lineHeight = 36.sp,
                                 modifier = Modifier.padding(5.dp)
                             )
-                            val title = stringResource(id = R.string.title5)
                             TextButton(
                                 onClick = {
                                     startActivity(
-                                        Intent(this@MainActivity, OssLicensesMenuActivity::class.java).apply {
-                                            putExtra("title", title)
-                                        }
+                                        Intent(this@MainActivity, ShowOpenSourceLibrariesActivity::class.java)
                                     )
-                                }, modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
+                                },
+                                modifier = Modifier.fillMaxWidth().padding(10.dp)
                             ) {
-                                Text(stringResource(id = R.string.display_licenses), fontSize = 24.sp
-                                )
+                                Text(stringResource(id = R.string.display_licenses), fontSize = 24.sp)
                             }
                         }
                     }
