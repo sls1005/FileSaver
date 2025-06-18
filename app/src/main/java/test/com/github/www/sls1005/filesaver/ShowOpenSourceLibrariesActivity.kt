@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
+import com.mikepenz.aboutlibraries.util.withContext
 import test.com.github.www.sls1005.filesaver.ui.theme.FileSaverTheme
 
 class ShowOpenSourceLibrariesActivity : ComponentActivity() {
@@ -19,9 +21,10 @@ class ShowOpenSourceLibrariesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LibrariesContainer {
-                        Modifier.fillMaxSize()
-                    }
+                    LibrariesContainer(
+                        Libs.Builder().withContext(this@ShowOpenSourceLibrariesActivity).build(),
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         }
