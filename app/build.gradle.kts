@@ -13,8 +13,8 @@ android {
         applicationId = "test.com.github.www.sls1005.filesaver"
         minSdk = 21
         targetSdk = 35
-        versionCode = 11
-        versionName = "2.3.0"
+        versionCode = 12
+        versionName = "2.4.0"
         vectorDrawables {
             useSupportLibrary = true
         }

@@ -14,8 +14,11 @@ open class DuplicatorI : Activity() {
         saveFile()
     }
     protected fun saveFile(uri: Uri?) {
+        var errFlag = false
         if (uri == null) {
-            displayGeneralErrorMsgAndFinish()
+            showMsg(this, getString(R.string.error0))
+            setResult(RESULT_CANCELED)
+            finish()
             return
         }
         val stored = File(
@@ -23,69 +26,57 @@ open class DuplicatorI : Activity() {
             "URI.txt"
         )
         if (!stored.exists()) {
-            displayErrorMsgAndFinish(getString(R.string.error1))
+            showMsg(this, getString(R.string.error1))
+            setResult(RESULT_CANCELED)
+            finish()
             return
         }
-        val cr = this.getContentResolver()
+        val cr = getContentResolver()
         val storedUri = Uri.parse(stored.readText())
         if (! hasPermission(this, storedUri)) {
-            displayErrorMsgAndFinish(getString(R.string.error2))
+            showMsg(this, getString(R.string.error2))
+            setResult(RESULT_CANCELED)
+            finish()
             return
         }
-        val dir = DocumentFile.fromTreeUri(this, storedUri)
-        if (dir == null) {
-            displayGeneralErrorMsgAndFinish()
-            return
-        }
-        val filename = DocumentFile.fromSingleUri(this, uri).let {
-            if (it == null) {
-                displayGeneralErrorMsgAndFinish()
-                return
-            } else {
-                it.name ?: run {
-                    displayGeneralErrorMsgAndFinish()
-                    return
+        DocumentFile.fromTreeUri(this, storedUri)?.also { dir ->
+            DocumentFile.fromSingleUri(this, uri)?.name?.also { filename ->
+                cr.getType(uri)?.also { mime ->
+                    dir.createFile(mime, filename)?.also { outputFile ->
+                        cr.openOutputStream(outputFile.uri)?.also { dst ->
+                            cr.openInputStream(uri)?.also { src ->
+                                src.copyTo(dst)
+                                src.close()
+                                dst.close()
+                            } ?: run {
+                                errFlag = true
+                            }
+                        } ?: run {
+                            errFlag = true
+                        }
+                    } ?: run {
+                        errFlag = true
+                    }
+                } ?: run {
+                    errFlag = true
                 }
+            } ?: run {
+                errFlag = true
             }
+        } ?: run {
+            errFlag = true
         }
-        val f = dir.createFile(
-            cr.getType(uri).let {
-                it ?: run {
-                    displayGeneralErrorMsgAndFinish()
-                    return
-                }
-            }, filename
-        ).let {
-            it ?: run {
-                displayGeneralErrorMsgAndFinish()
-                return
-            }
+        if (errFlag) {
+            showMsg(this, getString(R.string.error0))
+            setResult(RESULT_CANCELED)
+        } else {
+            showMsg(this, getString(R.string.success1))
+            setResult(RESULT_OK)
         }
-        val dst = cr.openOutputStream(f.uri) ?: run {
-            displayGeneralErrorMsgAndFinish()
-            return
-        }
-        val src = cr.openInputStream(uri) ?: run {
-            displayGeneralErrorMsgAndFinish()
-            return
-        }
-        src.copyTo(dst)
-        src.close()
-        dst.close()
-        showMsg(this, getString(R.string.success1))
-        setResult(RESULT_OK)
         finish()
-    }
-    private fun displayErrorMsgAndFinish(msg: String) {
-        showMsg(this, msg)
-        setResult(RESULT_CANCELED)
-        finish()
-    }
-    private fun displayGeneralErrorMsgAndFinish() {
-        displayErrorMsgAndFinish(getString(R.string.error0))
     }
     protected open fun saveFile() {
-        saveFile(intent.data)
+        saveFile(intent?.data /*?: null*/)
     }
 }
 
@@ -93,9 +84,9 @@ class DuplicatorII : DuplicatorI() {
     override fun saveFile() {
         saveFile(
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+                intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
             } else {
-                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+                intent?.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
             }
         )
     }
