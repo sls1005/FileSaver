@@ -13,8 +13,8 @@ android {
         applicationId = "test.com.github.www.sls1005.filesaver"
         minSdk = 21
         targetSdk = 35
-        versionCode = 12
-        versionName = "2.4.0"
+        versionCode = 14
+        versionName = "2.5.0"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -64,21 +64,29 @@ dependencies {
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation(platform("androidx.compose:compose-bom:2025.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.documentfile:documentfile:1.1.0")
-    implementation("com.mikepenz:aboutlibraries-core:12.2.0")
-    implementation("com.mikepenz:aboutlibraries-compose-m3:12.2.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.mikepenz:aboutlibraries-core:12.2.4")
+    implementation("com.mikepenz:aboutlibraries-compose-m3:12.2.4")
 }
 
-tasks.register<Copy>("Include license") {
-    include("LICENSE")
-    from("..")
-    into("src/main/assets/")
-}.also {
+arrayOf(
+    tasks.register<Copy>("Include license") {
+        include("LICENSE")
+        from("..")
+        into("src/main/assets/")
+    },
+    tasks.register<Copy>("Update English strings") {
+        include("strings.xml")
+        from("src/main/res/values")
+        into("src/main/res/values-en")
+    }
+).forEach {
     val task = it.get()
     afterEvaluate {
         tasks.named("preReleaseBuild") {

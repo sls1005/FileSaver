@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,11 +21,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
@@ -41,6 +42,7 @@ import test.com.github.www.sls1005.filesaver.ui.theme.FileSaverTheme
 import java.io.File
 
 class MainActivity : ComponentActivity() {
+    private var isResumed = false
     private val launcher = registerForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
     ) { uri ->
@@ -66,18 +68,17 @@ class MainActivity : ComponentActivity() {
             file.writeText(uri.toString())
         }
     }
-    override fun onResume() {
-        super.onResume()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             FileSaverTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.verticalScroll(rememberScrollState())
+                        modifier = Modifier.fillMaxSize().padding(innerPadding).verticalScroll(rememberScrollState())
                     ) {
                         val pathSet = (getStoredUri() != null)
                         var duplicator1Enabled by remember { mutableStateOf(false) }
@@ -149,16 +150,16 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 if (!(
-                                    (checkbox1Checked == duplicator1Enabled)
-                                            &&
-                                    (checkbox2Checked == duplicator2Enabled)
-                                )) {
+                                            (checkbox1Checked == duplicator1Enabled)
+                                                    &&
+                                                    (checkbox2Checked == duplicator2Enabled)
+                                            )) {
                                     val msg = stringResource(id = R.string.plz)
                                     OutlinedButton(
                                         onClick = {
                                             if (
                                                 (checkbox1Checked || checkbox2Checked)
-                                                        &&
+                                                &&
                                                 (getStoredUri() == null)
                                             ) {
                                                 launcher.launch(null)
@@ -309,6 +310,17 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        if (isResumed) {
+            startActivity(
+                Intent(this@MainActivity, MainActivity::class.java)
+            )
+            finish()
+        } else {
+            isResumed = true
         }
     }
     private fun getStoredUri(): Uri? {

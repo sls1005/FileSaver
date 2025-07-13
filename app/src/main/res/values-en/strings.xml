@@ -1,3 +1,28 @@
-<resources>
-    <!--Use default-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">File Saver</string>
+    <string name="title1">Save files</string>
+    <string name="title2">Path</string>
+    <string name="title3">Hints</string>
+    <string name="title4">License</string>
+    <string name="text1">Save files opened by this app.</string>
+    <string name="text2">Save files shared by other apps.</string>
+    <string name="tile1_label">Save files</string>
+    <string name="tile2_label">Save files sent</string>
+    <string name="button1">Confirm</string>
+    <string name="plz">Please select a folder for saving files.</string>
+    <string name="setting_up">Tap to set up</string>
+    <string name="hint1_1">(The path might not be displayed in a recognizable form. Tap on it if you wish to change it.)</string>
+    <string name="hint1_2">(Error: Permission expired. Please re-select the path.)</string>
+    <string name="hint2_1">1. When this application is picked for opening or sharing a file after set up, it will instead store the file into the (previously) selected folder and exit. However, this app will show up in the menu for picking apps only when the corresponding check box is selected.</string>
+    <string name="hint2_2">2. It might take time (or a reboot, or two) for this to be fully functional (That is, to be able to work with all your apps, or most of the apps.) after installed for the first time.</string>
+    <string name="error0">Error: Something wrong</string>
+    <string name="error1">Error: No path specified</string>
+    <string name="error2">Error: Permission expired. Please re-select the path.</string>
+    <string name="success1">File saved</string>
+    <string name="text3_1">The source code of this app is available at</string>
+    <string name="url1" translatable="false">https://github.com/sls1005/FileSaver</string>
+    <string name="text3_2">, under the MIT License.</string>
+    <string name="display_licenses">Show libraries</string>
 </resources>
