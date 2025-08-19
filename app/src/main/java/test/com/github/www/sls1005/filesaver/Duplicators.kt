@@ -14,13 +14,13 @@ open class DuplicatorI : Activity() {
         saveFile()
     }
     protected fun saveFile(uri: Uri?) {
-        var errFlag = false
-        if (uri == null) {
+        if (uri?.let { !isOfSupportedScheme(it) } ?: true) {
             showMsg(this, getString(R.string.error0))
             setResult(RESULT_CANCELED)
             finish()
             return
         }
+        var errFlag = false
         val stored = File(
             applicationContext.filesDir,
             "URI.txt"
@@ -90,4 +90,16 @@ class DuplicatorII : DuplicatorI() {
             }
         )
     }
+}
+
+private inline fun isOfSupportedScheme(uri: Uri): Boolean {
+    val uriScheme = uri.scheme
+    if (uriScheme != null) {
+        for (scheme in arrayOf("file", "content")) {
+            if (uriScheme.equals(scheme, ignoreCase=true)) {
+                return true
+            }
+        }
+    }
+    return false
 }

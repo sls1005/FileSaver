@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,42 +39,43 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.documentfile.provider.DocumentFile
 import test.com.github.www.sls1005.filesaver.ui.theme.FileSaverTheme
 import java.io.File
 
 class MainActivity : ComponentActivity() {
     private var isResumed = false
-    private val launcher = registerForActivityResult(
-        ActivityResultContracts.OpenDocumentTree()
-    ) { uri ->
-        if (uri != null) {
-            val file = File(
-                applicationContext.filesDir,
-                "URI.txt"
-            )
-            if (file.exists()) {
-                val previouslyStored = Uri.parse(file.readText())
-                if (hasPermission(this, previouslyStored)) {
-                    contentResolver.releasePersistableUriPermission(
-                        previouslyStored,
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    )
-                }
-                file.delete()
-            }
-            contentResolver.takePersistableUriPermission(
-                uri,
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            )
-            file.writeText(uri.toString())
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             FileSaverTheme {
+                val launcher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.OpenDocumentTree()
+                ) { uri ->
+                    if (uri != null) {
+                        val file = File(
+                            applicationContext.filesDir,
+                            "URI.txt"
+                        )
+                        if (file.exists()) {
+                            val previouslyStored = Uri.parse(file.readText())
+                            if (hasPermission(this, previouslyStored)) {
+                                contentResolver.releasePersistableUriPermission(
+                                    previouslyStored,
+                                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                )
+                            }
+                            file.delete()
+                        }
+                        contentResolver.takePersistableUriPermission(
+                            uri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        )
+                        file.writeText(uri.toString())
+                    }
+                }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         verticalArrangement = Arrangement.Center,
@@ -340,12 +342,7 @@ internal fun showMsg(ctx: Context, msg: String) {
 }
 
 internal fun hasPermission(ctx: Context, uri: Uri): Boolean {
-    ctx.contentResolver.persistedUriPermissions.forEach {
-        if (it.uri == uri) {
-            return true
-        }
-    }
-    return false
+    return DocumentFile.fromTreeUri(ctx, uri)?.canWrite() ?: false
 }
 
 internal fun getDuplicatorEnabled(id: Int, ctx: Context): Boolean {

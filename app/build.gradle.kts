@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "test.com.github.www.sls1005.filesaver"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "test.com.github.www.sls1005.filesaver"
         minSdk = 21
-        targetSdk = 35
-        versionCode = 14
-        versionName = "2.5.0"
+        targetSdk = 36
+        versionCode = 15
+        versionName = "3.0.0"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -61,13 +61,13 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
+    implementation(platform("androidx.compose:compose-bom:2025.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
+    //implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.documentfile:documentfile:1.1.0")
     implementation("com.google.android.material:material:1.12.0")
