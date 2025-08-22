@@ -342,7 +342,12 @@ internal fun showMsg(ctx: Context, msg: String) {
 }
 
 internal fun hasPermission(ctx: Context, uri: Uri): Boolean {
-    return DocumentFile.fromTreeUri(ctx, uri)?.canWrite() ?: false
+    ctx.contentResolver.persistedUriPermissions.forEach {
+        if (it.uri == uri) {
+            return true
+        }
+    }
+    return false
 }
 
 internal fun getDuplicatorEnabled(id: Int, ctx: Context): Boolean {
