@@ -341,13 +341,8 @@ internal fun showMsg(ctx: Context, msg: String) {
     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
 }
 
-internal fun hasPermission(ctx: Context, uri: Uri): Boolean {
-    ctx.contentResolver.persistedUriPermissions.forEach {
-        if (it.uri == uri) {
-            return true
-        }
-    }
-    return false
+internal inline fun hasPermission(ctx: Context, uri: Uri): Boolean {
+    return ctx.contentResolver.persistedUriPermissions.any { it.uri == uri }
 }
 
 internal fun getDuplicatorEnabled(id: Int, ctx: Context): Boolean {

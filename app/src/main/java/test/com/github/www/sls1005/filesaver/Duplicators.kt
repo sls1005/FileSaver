@@ -39,15 +39,17 @@ open class DuplicatorI : Activity() {
             finish()
             return
         }
-        DocumentFile.fromTreeUri(this, storedUri)?.also { dir ->
-            DocumentFile.fromSingleUri(this, uri)?.name?.also { filename ->
-                cr.getType(uri)?.also { mime ->
-                    dir.createFile(mime, filename)?.also { outputFile ->
-                        cr.openOutputStream(outputFile.uri)?.also { dst ->
-                            cr.openInputStream(uri)?.also { src ->
-                                src.copyTo(dst)
-                                src.close()
-                                dst.close()
+        try {
+            DocumentFile.fromTreeUri(this, storedUri)?.also { dir ->
+                DocumentFile.fromSingleUri(this, uri)?.name?.also { filename ->
+                    cr.getType(uri)?.also { mime ->
+                        dir.createFile(mime, filename)?.also { outputFile ->
+                            cr.openOutputStream(outputFile.uri)?.use { dst ->
+                                cr.openInputStream(uri)?.use { src ->
+                                    src.copyTo(dst)
+                                } ?: run {
+                                    errFlag = true
+                                }
                             } ?: run {
                                 errFlag = true
                             }
@@ -63,7 +65,7 @@ open class DuplicatorI : Activity() {
             } ?: run {
                 errFlag = true
             }
-        } ?: run {
+        } catch (_: Exception) {
             errFlag = true
         }
         if (errFlag) {

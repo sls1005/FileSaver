@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -13,8 +15,8 @@ android {
         applicationId = "test.com.github.www.sls1005.filesaver"
         minSdk = 21
         targetSdk = 36
-        versionCode = 15
-        versionName = "3.0.0"
+        versionCode = 16
+        versionName = "3.1.0"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -44,8 +46,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        target {
+            compilerOptions {
+                jvmTarget = JvmTarget.JVM_1_8
+            }
+        }
     }
     buildFeatures {
         compose = true
